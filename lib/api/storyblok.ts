@@ -23,7 +23,6 @@ export async function getStory(slug: string, params = {}) {
   // ...params,
   // });
   const { data, error, isLoading } = useSWR("cdn/stories/settings");
-
   // const result = await storyblokApi.get("cdn/stories/" + slug, {
   //   ...params,
   // });
