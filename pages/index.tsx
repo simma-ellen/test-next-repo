@@ -1,15 +1,26 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { useEffect } from "react";
 import { GetStaticProps, GetStaticPropsContext } from "next/types";
 import { getStory } from "lib/api/storyblok";
+import { apiPlugin, getStoryblokApi, storyblokInit } from "@storyblok/react";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home(settings: any) {
-  // const { data, error, isLoading } = useSWR("/api/user", fetcher);
-  console.log(settings);
+export default function Home(fallbackSettings: any) {
+  const storyblokApi = getStoryblokApi();
+  storyblokInit({
+    accessToken: "SCWmH5n9jDiQDM7toIUdoAtt",
+    use: [apiPlugin],
+    apiOptions: {
+      cache: {
+        clear: "auto",
+        type: "memory",
+      },
+    },
+  });
+  const fetcher = async (url: string) =>
+    await storyblokApi.get(url).then((res) => res.data);
+  const { data, error, isLoading } = useSWR("cdn/stories/settings", fetcher);
 
   return (
     <>
@@ -19,7 +30,11 @@ export default function Home(settings: any) {
       <main className="bg-yellow-200 min-h-screen flex items-center justify-center">
         <div>
           <h1 className="text-4xl font-bold mb-10">Try fetching some data</h1>
-          {/* I have {data} monkey friends. */}
+          {isLoading && <div>Loading…</div>}
+          {/* @ts-ignore  */}
+          <SWRConfig value={{ fallbackSettings }}>
+            {JSON.stringify(data)}
+          </SWRConfig>
         </div>
       </main>
     </>
@@ -28,11 +43,11 @@ export default function Home(settings: any) {
 export const getStaticProps: GetStaticProps<any> = async (
   context: GetStaticPropsContext
 ) => {
-  const settings = await getStory("settings");
+  const fallbackSettings = await getStory("settings");
 
   return {
     props: {
-      settings,
+      fallbackSettings,
     },
     revalidate: 3600,
   };
