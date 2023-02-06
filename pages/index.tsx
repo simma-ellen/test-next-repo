@@ -1,26 +1,18 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import useSWR, { SWRConfig } from "swr";
-import { useEffect } from "react";
 import { GetStaticProps, GetStaticPropsContext } from "next/types";
 import { getStory } from "lib/api/storyblok";
-import { apiPlugin, getStoryblokApi, storyblokInit } from "@storyblok/react";
 
 export default function Home(fallbackSettings: any) {
-  const storyblokApi = getStoryblokApi();
-  storyblokInit({
-    accessToken: "SCWmH5n9jDiQDM7toIUdoAtt",
-    use: [apiPlugin],
-    apiOptions: {
-      cache: {
-        clear: "auto",
-        type: "memory",
-      },
-    },
-  });
   const fetcher = async (url: string) =>
-    await storyblokApi.get(url).then((res) => res.data);
-  const { data, error, isLoading } = useSWR("cdn/stories/settings", fetcher);
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => data);
+
+  const { data, error, isLoading } = useSWR(
+    "https://api.storyblok.com/v2/cdn/stories/settings?token=SCWmH5n9jDiQDM7toIUdoAtt&version=draft",
+    fetcher
+  );
 
   return (
     <>
@@ -33,7 +25,23 @@ export default function Home(fallbackSettings: any) {
           {isLoading && <div>Loading…</div>}
           {/* @ts-ignore  */}
           <SWRConfig value={{ fallbackSettings }}>
-            {JSON.stringify(data)}
+            <>
+              {/* <div className="mb-12">{JSON.stringify(data)}</div> */}
+              {data?.story?.content && (
+                <div className="text-center flex flex-col items-center gap-6">
+                  <p>{data.story.content.my_greeting}</p>
+                  <p className="text-xl font-medium">
+                    There are currently {data.story.content.nr_of_monkeys}{" "}
+                    monkeys in the building
+                  </p>
+                  <img
+                    className="max-w-[80vw]"
+                    src={data.story.content.image?.filename}
+                    alt=""
+                  />
+                </div>
+              )}
+            </>
           </SWRConfig>
         </div>
       </main>
