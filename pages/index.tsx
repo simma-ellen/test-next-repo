@@ -1,7 +1,7 @@
 import { GetStaticProps, GetStaticPropsContext } from "next/types";
 import { getStory } from "lib/api/storyblok";
 import SWR from "@/components/swr";
-import Kitchensink from "./kitchensink";
+import Kitchensink from "../components/kitchensink";
 
 export default function Home(fallbackSettings: any) {
   return (
