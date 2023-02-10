@@ -15,6 +15,7 @@ export default function Kitchensink() {
   return (
     <div className="h-screen p-24">
       <div className="flex gap-4">
+        {/* Regular buttons  */}
         <Button
           className={`${ButtonType.Base} ${ButtonType.Primary}`}
           href="https://google.se"
@@ -27,6 +28,7 @@ export default function Kitchensink() {
           target="_blank"
           caption="I'm a button too"
         />
+        {/* Disabled button  */}
         <Button
           className={`${ButtonType.Base} ${ButtonType.DisabledPrimary}`}
           href="https://google.se"
@@ -37,31 +39,31 @@ export default function Kitchensink() {
         />
       </div>
 
+      {/* Button with children  */}
       <div className="mt-6">
         <Button
           className={`${ButtonType.Base} ${ButtonType.Primary} inline-flex items-center gap-4 justify-between mb-4`}
           onClick={() => alert("I'm a button")}
-          onMouseOver={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
         >
           <Icon type={IconTypes.Plus} />
           Hello
           <Icon type={IconTypes.Check} />
         </Button>
-        <p
-          className={`transition-opacity duration-500 ${
-            hovered ? "opacity-1" : "opacity-0"
-          }`}
+      </div>
+      {/* Button with special effect on hover */}
+      <div className="mt-6">
+        <Button
+          className={`${ButtonType.Base} ${ButtonType.Primary} inline-grid gap-2 relative overflow-hidden`}
+          onMouseOver={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
         >
-          Hovering
-        </p>
-        <p
-          className={`transition-opacity duration-500 ${
-            hovered ? "opacity-0" : "opacity-1"
-          }`}
-        >
-          Not hovering
-        </p>
+          <span className="z-[1]">My little caption</span>
+          <div
+            className={`hover-bg absolute bottom-0 left-[-1%] -z-1 h-full w-[102%] transform transition-transform duration-150 ease-out bg-blue-600 ${
+              hovered ? "translate-y-0" : "translate-y-full"
+            }`}
+          ></div>
+        </Button>
       </div>
     </div>
   );
