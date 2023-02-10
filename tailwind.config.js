@@ -10,4 +10,11 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  safelist: [
+    { pattern: /^px-/, variants: ["md, lg"] },
+    { pattern: /^py-/, variants: ["md, lg"] },
+    { pattern: /^bg-/, variants: ["md, lg"] },
+    { pattern: /^text-/, variants: ["md, lg"] },
+    { pattern: /^cursor-/, variants: ["md, lg"] },
+  ],
 };
